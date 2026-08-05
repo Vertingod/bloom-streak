@@ -16,6 +16,7 @@ import { GardenAchievementPanel } from "@/features/achievements/components/garde
 import type { DashboardHabit } from "@/features/dashboard/dashboard-model";
 import { useDashboardData } from "@/features/dashboard/use-dashboard-data";
 import type { HabitDraft } from "@/features/habits/types";
+import { PwaInstallCard } from "@/features/pwa/components/pwa-install-card";
 import { CreateHabitSheet } from "./create-habit-sheet";
 import { GardenOverview } from "./garden-overview";
 import { HabitCard } from "./habit-card";
@@ -105,6 +106,7 @@ export function DashboardClient() {
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-5">
         <TodayHero model={model} onCreateHabit={() => setCreateOpen(true)} />
         <AuthPanel cloud={cloud} />
+        <PwaInstallCard />
 
         {feedback && (
           <div className="flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-medium text-primary shadow-sm">

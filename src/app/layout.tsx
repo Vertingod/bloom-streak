@@ -16,6 +16,19 @@ export const metadata: Metadata = {
   title: "BloomStreak | 每天一点点，连续绽放",
   description: "一个移动端优先的高颜值习惯打卡 App，让每一次坚持都有生长感。",
   applicationName: "BloomStreak",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "BloomStreak",
+  },
+  icons: {
+    icon: [
+      { url: "/icons/bloom-streak-icon.svg", type: "image/svg+xml" },
+      { url: "/icons/bloom-streak-icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [{ url: "/icons/bloom-streak-icon-192.png", sizes: "192x192", type: "image/png" }],
+  },
 };
 
 export const viewport: Viewport = {
