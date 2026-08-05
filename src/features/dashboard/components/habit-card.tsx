@@ -1,4 +1,4 @@
-﻿import { BookOpen, Check, Droplet, Dumbbell, Heart, Leaf, Moon, PenLine, Sparkles } from "lucide-react";
+﻿import { BookOpen, Check, Droplet, Dumbbell, Heart, Leaf, Moon, PenLine, Settings2, Sparkles } from "lucide-react";
 import type { ComponentType } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,15 @@ const iconMap: Record<HabitIcon, ComponentType<{ className?: string }>> = {
   heart: Heart,
 };
 
-export function HabitCard({ habit, onComplete }: { habit: DashboardHabit; onComplete: (habitId: string) => void }) {
+export function HabitCard({
+  habit,
+  onComplete,
+  onEdit,
+}: {
+  habit: DashboardHabit;
+  onComplete: (habitId: string) => void;
+  onEdit: (habit: DashboardHabit) => void;
+}) {
   const Icon = iconMap[habit.icon];
   const color = habitColors.find((item) => item.id === habit.color);
   const category = habitCategories.find((item) => item.id === habit.category);
@@ -39,7 +47,12 @@ export function HabitCard({ habit, onComplete }: { habit: DashboardHabit; onComp
               <p className="text-sm text-muted-foreground">{category?.label ?? "\u4e60\u60ef"} · {habit.frequency === "daily" ? "\u6bcf\u5929" : "\u5de5\u4f5c\u65e5"}</p>
             </div>
           </div>
-          <StreakBadge streak={habit.currentStreak} />
+          <div className="flex shrink-0 items-center gap-2">
+            <StreakBadge streak={habit.currentStreak} />
+            <Button type="button" variant="ghost" size="icon-sm" onClick={() => onEdit(habit)} aria-label={"\u7f16\u8f91\u4e60\u60ef"}>
+              <Settings2 className="size-4" />
+            </Button>
+          </div>
         </div>
 
         <SevenDayStrip days={habit.last7Days} />

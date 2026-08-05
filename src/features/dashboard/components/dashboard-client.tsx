@@ -1,8 +1,11 @@
 ﻿"use client";
 
+import { CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 
+import type { DashboardHabit } from "@/features/dashboard/dashboard-model";
 import { useDashboardData } from "@/features/dashboard/use-dashboard-data";
+import type { HabitDraft } from "@/features/habits/types";
 import { CreateHabitSheet } from "./create-habit-sheet";
 import { GardenOverview } from "./garden-overview";
 import { HabitCard } from "./habit-card";
@@ -10,12 +13,48 @@ import { TodayHero } from "./today-hero";
 
 export function DashboardClient() {
   const [createOpen, setCreateOpen] = useState(false);
-  const { model, loading, createHabit, completeHabit } = useDashboardData();
+  const [editingHabit, setEditingHabit] = useState<DashboardHabit | null>(null);
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const { model, loading, createHabit, updateHabit, archiveHabit, completeHabit } = useDashboardData();
+
+  function showFeedback(message: string) {
+    setFeedback(message);
+    window.setTimeout(() => setFeedback(null), 2200);
+  }
+
+  async function handleCreate(draft: HabitDraft) {
+    await createHabit(draft);
+    showFeedback("\u4e60\u60ef\u5df2\u79cd\u4e0b\uff0c\u4eca\u5929\u5c31\u53ef\u4ee5\u6d47\u704c\u3002");
+  }
+
+  async function handleUpdate(habitId: string, patch: Partial<HabitDraft>) {
+    await updateHabit(habitId, patch);
+    setEditingHabit(null);
+    showFeedback("\u4e60\u60ef\u5df2\u66f4\u65b0\uff0c\u539f\u6709 streak \u5df2\u4fdd\u7559\u3002");
+  }
+
+  async function handleArchive(habitId: string) {
+    await archiveHabit(habitId);
+    setEditingHabit(null);
+    showFeedback("\u4e60\u60ef\u5df2\u5f52\u6863\uff0c\u5386\u53f2\u8bb0\u5f55\u4ecd\u4fdd\u7559\u5728\u672c\u5730\u3002");
+  }
+
+  async function handleComplete(habitId: string) {
+    await completeHabit(habitId);
+    showFeedback("\u6d47\u704c\u6210\u529f\uff0c\u4eca\u5929\u7684\u82b1\u56ed\u53c8\u4eae\u4e86\u4e00\u70b9\u3002");
+  }
 
   return (
     <main className="min-h-[100dvh] px-4 py-5 text-foreground sm:px-6 lg:px-10">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-5">
         <TodayHero model={model} onCreateHabit={() => setCreateOpen(true)} />
+
+        {feedback && (
+          <div className="flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-medium text-primary shadow-sm">
+            <CheckCircle2 className="size-4" />
+            {feedback}
+          </div>
+        )}
 
         <div className="grid gap-5 lg:grid-cols-[0.92fr_1.08fr]">
           <GardenOverview habits={model.habits} />
@@ -38,7 +77,7 @@ export function DashboardClient() {
             ) : (
               <div className="grid gap-3">
                 {model.habits.map((habit) => (
-                  <HabitCard key={habit.id} habit={habit} onComplete={(habitId) => void completeHabit(habitId)} />
+                  <HabitCard key={habit.id} habit={habit} onEdit={setEditingHabit} onComplete={(habitId) => void handleComplete(habitId)} />
                 ))}
               </div>
             )}
@@ -46,7 +85,30 @@ export function DashboardClient() {
         </div>
       </div>
 
-      <CreateHabitSheet open={createOpen} onOpenChange={setCreateOpen} onCreate={createHabit} />
+      {createOpen && (
+        <CreateHabitSheet
+          key="create"
+          open={createOpen}
+          onOpenChange={setCreateOpen}
+          onCreate={handleCreate}
+        />
+      )}
+
+      {editingHabit && (
+        <CreateHabitSheet
+          key={editingHabit.id}
+          open={Boolean(editingHabit)}
+          habit={editingHabit}
+          onOpenChange={(open) => {
+            if (!open) {
+              setEditingHabit(null);
+            }
+          }}
+          onCreate={handleCreate}
+          onUpdate={handleUpdate}
+          onArchive={handleArchive}
+        />
+      )}
     </main>
   );
 }

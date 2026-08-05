@@ -12,6 +12,8 @@ export type DashboardDataState = {
   model: DashboardModel;
   loading: boolean;
   createHabit: (draft: HabitDraft) => Promise<void>;
+  updateHabit: (habitId: string, patch: Partial<HabitDraft>) => Promise<void>;
+  archiveHabit: (habitId: string) => Promise<void>;
   completeHabit: (habitId: string) => Promise<void>;
 };
 
@@ -92,6 +94,30 @@ export function useDashboardData(): DashboardDataState {
     [refresh, repositories],
   );
 
+  const updateHabit = useCallback(
+    async (habitId: string, patch: Partial<HabitDraft>) => {
+      if (!repositories) {
+        return;
+      }
+
+      await repositories.habits.updateHabit(habitId, patch);
+      await refresh();
+    },
+    [refresh, repositories],
+  );
+
+  const archiveHabit = useCallback(
+    async (habitId: string) => {
+      if (!repositories) {
+        return;
+      }
+
+      await repositories.habits.archiveHabit(habitId);
+      await refresh();
+    },
+    [refresh, repositories],
+  );
+
   const completeHabit = useCallback(
     async (habitId: string) => {
       if (!repositories) {
@@ -113,6 +139,8 @@ export function useDashboardData(): DashboardDataState {
     model,
     loading,
     createHabit,
+    updateHabit,
+    archiveHabit,
     completeHabit,
   };
 }

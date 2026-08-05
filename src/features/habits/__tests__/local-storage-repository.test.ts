@@ -88,4 +88,41 @@ describe("local storage repositories", () => {
     expect(second).toEqual(first);
     await expect(checkins.listCheckinsForHabit("habit-1")).resolves.toHaveLength(1);
   });
+  it("updates and archives an existing habit without losing check-ins", async () => {
+    const storage = new MemoryStorage();
+    const habits = createLocalHabitRepository(storage, {
+      now: () => new Date("2026-08-05T01:00:00.000Z"),
+      createId: () => "habit-1",
+    });
+    const checkins = createLocalCheckinRepository(storage, {
+      createId: () => "checkin-1",
+    });
+
+    const created = await habits.createHabit("local-user", draft);
+    await checkins.completeHabit({
+      userId: "local-user",
+      habitId: created.id,
+      date: "2026-08-05",
+      completedAt: "2026-08-05T02:00:00.000Z",
+    });
+
+    const updated = await habits.updateHabit(created.id, {
+      name: "Read English",
+      color: "sky",
+      icon: "book-open",
+    });
+    const archived = await habits.archiveHabit(created.id);
+
+    expect(updated).toMatchObject({
+      id: "habit-1",
+      name: "Read English",
+      color: "sky",
+      icon: "book-open",
+      updatedAt: "2026-08-05T01:00:00.000Z",
+    });
+    expect(archived.archived).toBe(true);
+    await expect(habits.listHabits("local-user")).resolves.toEqual([]);
+    await expect(checkins.listCheckinsForHabit(created.id)).resolves.toHaveLength(1);
+  });
 });
+
