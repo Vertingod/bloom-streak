@@ -19,6 +19,7 @@ import type { HabitDraft } from "@/features/habits/types";
 import { PwaInstallCard } from "@/features/pwa/components/pwa-install-card";
 import { CreateHabitSheet } from "./create-habit-sheet";
 import { GardenOverview } from "./garden-overview";
+import { GardenReflectionCard } from "./garden-reflection-card";
 import { HabitCard } from "./habit-card";
 import { HabitDetailSheet } from "./habit-detail-sheet";
 import { TodayHero } from "./today-hero";
@@ -128,6 +129,8 @@ export function DashboardClient() {
                 <p className="text-sm text-muted-foreground">{cloud.authenticated ? "\u6253\u5361\u540e\u4f1a\u5199\u5165 Supabase\uff0c\u5e76\u4fdd\u7559\u672c\u5730\u6570\u636e\u4f5c\u4e3a\u5148\u884c\u4f53\u9a8c\u3002" : "\u6253\u5361\u540e\u4f1a\u5148\u5199\u5165 LocalStorage\uff0c\u767b\u5f55\u540e\u53ef\u540c\u6b65\u5230 Supabase\u3002"}</p>
               </div>
             </div>
+
+            {!loading && <GardenReflectionCard model={model} />}
 
             {loading ? (
               <div className="rounded-[1.75rem] border bg-card/75 p-6 text-muted-foreground shadow-sm">{"\u6b63\u5728\u6574\u7406\u4eca\u5929\u7684\u82b1\u56ed..."}</div>
