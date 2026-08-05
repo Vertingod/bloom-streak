@@ -8,7 +8,7 @@ BloomStreak is a mobile-first habit check-in app with a warm garden metaphor. Th
 
 - Product name: BloomStreak
 - Package/repo name: `bloom-streak`
-- Chinese tagline: ??????????
+- Chinese tagline: 每天一点点，连续绽放
 
 ## Phase 1 scope
 
