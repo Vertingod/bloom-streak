@@ -3,6 +3,7 @@
 import { CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 
+import { AuthPanel } from "@/features/auth/components/auth-panel";
 import type { DashboardHabit } from "@/features/dashboard/dashboard-model";
 import { useDashboardData } from "@/features/dashboard/use-dashboard-data";
 import type { HabitDraft } from "@/features/habits/types";
@@ -15,7 +16,7 @@ export function DashboardClient() {
   const [createOpen, setCreateOpen] = useState(false);
   const [editingHabit, setEditingHabit] = useState<DashboardHabit | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
-  const { model, loading, createHabit, updateHabit, archiveHabit, completeHabit } = useDashboardData();
+  const { model, loading, cloud, createHabit, updateHabit, archiveHabit, completeHabit } = useDashboardData();
 
   function showFeedback(message: string) {
     setFeedback(message);
@@ -48,6 +49,7 @@ export function DashboardClient() {
     <main className="min-h-[100dvh] px-4 py-5 text-foreground sm:px-6 lg:px-10">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-5">
         <TodayHero model={model} onCreateHabit={() => setCreateOpen(true)} />
+        <AuthPanel cloud={cloud} />
 
         {feedback && (
           <div className="flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-medium text-primary shadow-sm">
@@ -63,7 +65,7 @@ export function DashboardClient() {
             <div className="flex items-end justify-between gap-3 px-1">
               <div>
                 <h2 className="text-xl font-semibold tracking-tight">{"\u4eca\u65e5\u4e60\u60ef"}</h2>
-                <p className="text-sm text-muted-foreground">{"\u6253\u5361\u540e\u4f1a\u81ea\u52a8\u5199\u5165 LocalStorage\uff0c\u540c\u4e00\u5929\u4e0d\u4f1a\u91cd\u590d\u8bb0\u5f55\u3002"}</p>
+                <p className="text-sm text-muted-foreground">{cloud.authenticated ? "\u6253\u5361\u540e\u4f1a\u5199\u5165 Supabase\uff0c\u5e76\u4fdd\u7559\u672c\u5730\u6570\u636e\u4f5c\u4e3a\u5148\u884c\u4f53\u9a8c\u3002" : "\u6253\u5361\u540e\u4f1a\u5148\u5199\u5165 LocalStorage\uff0c\u767b\u5f55\u540e\u53ef\u540c\u6b65\u5230 Supabase\u3002"}</p>
               </div>
             </div>
 
