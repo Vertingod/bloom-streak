@@ -1,69 +1,150 @@
-import Image from "next/image";
+import { ArrowRight, BadgeCheck, Leaf, LineChart, Sparkles } from "lucide-react";
+import Link from "next/link";
+
+import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+
+const previewHabits = [
+  { name: "????", streak: 8, completed: true, tone: "bg-emerald-100" },
+  { name: "?? 20 ??", streak: 5, completed: true, tone: "bg-amber-100" },
+  { name: "??????", streak: 2, completed: false, tone: "bg-sky-100" },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <main className="min-h-[100dvh] overflow-hidden px-5 py-6 text-foreground sm:px-8 lg:px-12">
+      <section className="mx-auto grid min-h-[calc(100dvh-3rem)] w-full max-w-7xl items-center gap-10 lg:grid-cols-[1.02fr_0.98fr]">
+        <div className="space-y-8">
+          <Badge className="rounded-full border-primary/20 bg-primary/10 px-4 py-1.5 text-sm text-primary shadow-sm">
+            BloomStreak ? ??????????
+          </Badge>
+
+          <div className="space-y-5">
+            <h1 className="max-w-3xl text-5xl font-semibold tracking-[-0.05em] text-balance sm:text-6xl lg:text-7xl">
+              ???????????????????
+            </h1>
+            <p className="max-w-2xl text-lg leading-8 text-muted-foreground sm:text-xl">
+              BloomStreak ????????????? App?????????????????????????
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/dashboard"
+              className={buttonVariants({
+                size: "lg",
+                className: "h-12 rounded-full px-6 text-base shadow-lg shadow-primary/20",
+              })}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              ???????
+              <ArrowRight className="size-4" />
+            </Link>
+            <Link
+              href="#mvp"
+              className={buttonVariants({
+                size: "lg",
+                variant: "outline",
+                className: "h-12 rounded-full bg-background/70 px-6 text-base",
+              })}
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              ?? MVP ??
+            </Link>
+          </div>
+
+          <div className="grid max-w-2xl gap-3 sm:grid-cols-3">
+            <FeaturePill icon={<Leaf className="size-4" />} label="??????" />
+            <FeaturePill icon={<LineChart className="size-4" />} label="?? streak" />
+            <FeaturePill icon={<BadgeCheck className="size-4" />} label="?????" />
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+
+        <Card className="relative border-white/70 bg-card/80 shadow-2xl shadow-emerald-900/10 backdrop-blur">
+          <CardContent className="space-y-6 p-5 sm:p-7">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground">????</p>
+                <h2 className="mt-1 text-2xl font-semibold tracking-tight">3 / 5 ???</h2>
+              </div>
+              <Badge className="rounded-full bg-accent text-accent-foreground">?? 8 ?</Badge>
+            </div>
+
+            <Progress value={60} className="h-3" />
+
+            <div className="relative overflow-hidden rounded-[2rem] border bg-gradient-to-br from-emerald-50 via-amber-50 to-lime-50 p-5">
+              <div className="absolute -right-10 -top-10 size-32 rounded-full bg-amber-200/50 blur-2xl" />
+              <div className="absolute -bottom-12 -left-10 size-36 rounded-full bg-emerald-200/60 blur-2xl" />
+              <div className="relative grid grid-cols-3 gap-3">
+                {previewHabits.map((habit, index) => (
+                  <div
+                    key={habit.name}
+                    className="rounded-[1.5rem] border border-white/70 bg-white/65 p-3 shadow-sm backdrop-blur"
+                  >
+                    <div className={`mx-auto flex size-16 items-end justify-center rounded-full ${habit.tone}`}>
+                      <div
+                        className={`mb-3 rounded-full bg-primary/80 ${
+                          habit.completed ? "h-10 w-7 shadow-lg shadow-primary/25" : "h-5 w-5 opacity-70"
+                        }`}
+                      />
+                    </div>
+                    <p className="mt-3 text-center text-xs font-medium">{habit.name}</p>
+                    <p className="text-center text-xs text-muted-foreground">{habit.streak} ?</p>
+                    <div className="mt-3 flex justify-center gap-1">
+                      {Array.from({ length: 7 }, (_, day) => (
+                        <span
+                          key={`${habit.name}-${day}`}
+                          className={`size-1.5 rounded-full ${
+                            day <= index + 3 ? "bg-primary" : "bg-muted"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-[1.75rem] border bg-background/75 p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex size-10 items-center justify-center rounded-full bg-accent text-accent-foreground">
+                  <Sparkles className="size-5" />
+                </div>
+                <div>
+                  <p className="font-medium">???????</p>
+                  <p className="text-sm text-muted-foreground">??? 2 ???????????????</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      <section id="mvp" className="mx-auto grid max-w-7xl gap-4 py-14 md:grid-cols-3">
+        <InfoCard title="MVP ??" text="Landing?Dashboard??????????????????????AI?????????" />
+        <InfoCard title="????" text="?? Supabase-ready LocalStorage ??????????? Supabase Auth?RLS ?????" />
+        <InfoCard title="????" text="???? Garden??????????????????? emoji ??? 3D?" />
+      </section>
+    </main>
+  );
+}
+
+function FeaturePill({ icon, label }: { icon: React.ReactNode; label: string }) {
+  return (
+    <div className="flex items-center gap-2 rounded-full border bg-card/70 px-4 py-2 text-sm shadow-sm backdrop-blur">
+      <span className="text-primary">{icon}</span>
+      <span>{label}</span>
     </div>
+  );
+}
+
+function InfoCard({ title, text }: { title: string; text: string }) {
+  return (
+    <Card className="border-white/70 bg-card/75 shadow-sm backdrop-blur">
+      <CardContent className="space-y-3 p-5">
+        <h3 className="text-lg font-semibold">{title}</h3>
+        <p className="leading-7 text-muted-foreground">{text}</p>
+      </CardContent>
+    </Card>
   );
 }
