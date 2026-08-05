@@ -1,4 +1,4 @@
-import { getAchievementBadges, type Achievement } from "@/features/achievements/achievement-rules";
+import { getHabitAchievementBadges, type Achievement } from "@/features/achievements/achievement-rules";
 import type { DashboardHabit } from "@/features/dashboard/dashboard-model";
 
 export type HabitDetailSummary = {
@@ -17,11 +17,7 @@ export function buildHabitDetailSummary(input: {
   const last30Completed = input.habit.last30Days.filter((day) => day.completed).length;
   const last30Total = input.habit.last30Days.length;
   const last30Percentage = last30Total === 0 ? 0 : Math.round((last30Completed / last30Total) * 100);
-  const achievements = getAchievementBadges({
-    habits: input.habits,
-    stats: input.habit,
-    todayAllDone: input.todayAllDone,
-  });
+  const achievements = getHabitAchievementBadges({ stats: input.habit });
 
   return {
     last30Completed,

@@ -1,6 +1,7 @@
 import { CalendarDays, CheckCircle2, LockKeyhole, Trophy, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { AchievementIllustration } from "@/features/achievements/components/achievement-illustration";
 import type { DashboardHabit } from "@/features/dashboard/dashboard-model";
 import { buildHabitDetailSummary } from "@/features/dashboard/habit-detail-model";
 import { habitCategories, habitColors } from "@/features/habits/habit-config";
@@ -113,14 +114,23 @@ export function HabitDetailSheet({
                       : "border-border bg-muted/35 text-muted-foreground",
                   )}
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <h3 className="font-medium text-foreground">{achievement.label}</h3>
-                    <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium", achievement.unlocked ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground")}>
-                      {achievement.unlocked ? <CheckCircle2 className="size-3" /> : <LockKeyhole className="size-3" />}
-                      {achievement.unlocked ? "\u5df2\u89e3\u9501" : "\u672a\u89e3\u9501"}
-                    </span>
+                  <div className="flex items-start gap-3">
+                    <AchievementIllustration
+                      illustration={achievement.illustration}
+                      title={achievement.label}
+                      className="size-12"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-3">
+                        <h3 className="font-medium text-foreground">{achievement.label}</h3>
+                        <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium", achievement.unlocked ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground")}>
+                          {achievement.unlocked ? <CheckCircle2 className="size-3" /> : <LockKeyhole className="size-3" />}
+                          {achievement.unlocked ? "\u5df2\u89e3\u9501" : "\u672a\u89e3\u9501"}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-sm">{achievement.description}</p>
+                    </div>
                   </div>
-                  <p className="mt-1 text-sm">{achievement.description}</p>
                 </article>
               ))}
             </div>

@@ -46,6 +46,8 @@ describe("HabitDetailSheet", () => {
     expect(markup.match(/data-history-cell=/g)).toHaveLength(30);
     expect(markup).toContain("\u7b2c\u4e00\u9897\u5c0f\u82bd");
     expect(markup).toContain("\u4e03\u65e5\u7efd\u653e");
+    expect(markup).toContain('data-achievement-illustration="sprout"');
+    expect(markup).toContain('data-achievement-illustration="bloom"');
     expect(markup).toContain("\u672a\u89e3\u9501");
   });
 });

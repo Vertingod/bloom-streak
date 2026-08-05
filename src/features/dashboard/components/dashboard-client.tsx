@@ -1,9 +1,18 @@
 "use client";
 
 import { CheckCircle2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { AuthPanel } from "@/features/auth/components/auth-panel";
+import {
+  buildNewAchievementCelebrations,
+  readSeenAchievementIds,
+  writeSeenAchievementIds,
+  type AchievementCelebration,
+} from "@/features/achievements/achievement-notifications";
+import { getGardenAchievementBadges, getHabitAchievementBadges } from "@/features/achievements/achievement-rules";
+import { AchievementCelebrationDialog } from "@/features/achievements/components/achievement-celebration-dialog";
+import { GardenAchievementPanel } from "@/features/achievements/components/garden-achievement-panel";
 import type { DashboardHabit } from "@/features/dashboard/dashboard-model";
 import { useDashboardData } from "@/features/dashboard/use-dashboard-data";
 import type { HabitDraft } from "@/features/habits/types";
@@ -18,10 +27,51 @@ export function DashboardClient() {
   const [editingHabit, setEditingHabit] = useState<DashboardHabit | null>(null);
   const [selectedHabitId, setSelectedHabitId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [achievementQueue, setAchievementQueue] = useState<AchievementCelebration[]>([]);
   const { model, loading, cloud, createHabit, updateHabit, archiveHabit, completeHabit } = useDashboardData();
   const selectedHabit = selectedHabitId
     ? model.habits.find((habit) => habit.id === selectedHabitId) ?? null
     : null;
+  const gardenAchievements = useMemo(
+    () => getGardenAchievementBadges({ habits: model.allHabits, perfectDayCount: model.perfectDayCount }),
+    [model.allHabits, model.perfectDayCount],
+  );
+  const habitAchievementGroups = useMemo(
+    () =>
+      model.allHabits.map((habit) => ({
+        habit,
+        achievements: getHabitAchievementBadges({ stats: habit }),
+      })),
+    [model.allHabits],
+  );
+
+  useEffect(() => {
+    if (loading || typeof window === "undefined") {
+      return;
+    }
+
+    const seenAchievementIds = readSeenAchievementIds(window.localStorage);
+    const celebrations = buildNewAchievementCelebrations({
+      habitAchievements: habitAchievementGroups,
+      gardenAchievements,
+      seenAchievementIds,
+    });
+
+    if (celebrations.length === 0) {
+      return;
+    }
+
+    const nextSeenAchievementIds = new Set(seenAchievementIds);
+    for (const celebration of celebrations) {
+      nextSeenAchievementIds.add(celebration.instanceId);
+    }
+    const celebrationTimer = window.setTimeout(() => {
+      setAchievementQueue((queue) => [...queue, ...celebrations]);
+      writeSeenAchievementIds(window.localStorage, nextSeenAchievementIds);
+    }, 0);
+
+    return () => window.clearTimeout(celebrationTimer);
+  }, [gardenAchievements, habitAchievementGroups, loading]);
 
   function showFeedback(message: string) {
     setFeedback(message);
@@ -64,7 +114,10 @@ export function DashboardClient() {
         )}
 
         <div className="grid gap-5 lg:grid-cols-[0.92fr_1.08fr]">
-          <GardenOverview habits={model.habits} />
+          <div className="space-y-5">
+            <GardenOverview habits={model.habits} />
+            <GardenAchievementPanel habits={model.allHabits} perfectDayCount={model.perfectDayCount} />
+          </div>
 
           <section className="space-y-3">
             <div className="flex items-end justify-between gap-3 px-1">
@@ -134,6 +187,12 @@ export function DashboardClient() {
           onArchive={handleArchive}
         />
       )}
+
+      <AchievementCelebrationDialog
+        celebration={achievementQueue[0] ?? null}
+        newCount={achievementQueue.length}
+        onClose={() => setAchievementQueue((queue) => queue.slice(1))}
+      />
     </main>
   );
 }

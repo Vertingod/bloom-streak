@@ -35,12 +35,14 @@ export type DashboardDataState = {
 const emptyModel: DashboardModel = {
   todayDateKey: "",
   habits: [],
+  allHabits: [],
   progress: {
     completed: 0,
     total: 0,
     percentage: 0,
     allDone: false,
   },
+  perfectDayCount: 0,
 };
 
 export function useDashboardData(): DashboardDataState {

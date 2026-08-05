@@ -65,4 +65,46 @@ describe("buildDashboardModel", () => {
       true,
     ]);
   });
+
+  it("keeps all habits available for garden-wide achievement totals", () => {
+    const weekdayHabit: Habit = {
+      ...baseHabit,
+      id: "habit-2",
+      name: "Weekday writing",
+      frequency: "weekdays",
+      displayOrder: 1,
+    };
+
+    const model = buildDashboardModel({
+      habits: [baseHabit, weekdayHabit],
+      checkins: [checkin("habit-1", "2026-08-08"), checkin("habit-2", "2026-08-07")],
+      todayDateKey: "2026-08-08",
+    });
+
+    expect(model.habits.map((habit) => habit.id)).toEqual(["habit-1"]);
+    expect(model.allHabits.map((habit) => habit.id)).toEqual(["habit-1", "habit-2"]);
+    expect(model.allHabits.find((habit) => habit.id === "habit-2")?.totalCheckins).toBe(1);
+  });
+
+  it("counts historical perfect days as a durable garden milestone", () => {
+    const secondHabit: Habit = {
+      ...baseHabit,
+      id: "habit-2",
+      name: "Evening stretch",
+      displayOrder: 1,
+    };
+
+    const model = buildDashboardModel({
+      habits: [baseHabit, secondHabit],
+      checkins: [
+        checkin("habit-1", "2026-08-03"),
+        checkin("habit-2", "2026-08-03"),
+        checkin("habit-1", "2026-08-04"),
+      ],
+      todayDateKey: "2026-08-05",
+    });
+
+    expect(model.progress.allDone).toBe(false);
+    expect(model.perfectDayCount).toBe(1);
+  });
 });

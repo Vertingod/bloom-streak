@@ -41,8 +41,10 @@ describe("buildHabitDetailSummary", () => {
     expect(summary.unlockedAchievements.map((achievement) => achievement.id)).toEqual([
       "first-sprout",
       "three-day-rhythm",
-      "perfect-day",
     ]);
-    expect(summary.lockedAchievements.map((achievement) => achievement.id)).toContain("seven-day-bloom");
+    expect(summary.lockedAchievements.map((achievement) => achievement.id)).toEqual([
+      "seven-day-bloom",
+      "habit-21-days",
+    ]);
   });
 });
