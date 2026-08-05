@@ -1,4 +1,4 @@
-﻿import { BookOpen, Check, Droplet, Dumbbell, Heart, Leaf, Moon, PenLine, Settings2, Sparkles } from "lucide-react";
+import { BookOpen, Check, Droplet, Dumbbell, Eye, Heart, Leaf, Moon, PenLine, Settings2, Sparkles } from "lucide-react";
 import type { ComponentType } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -25,10 +25,12 @@ export function HabitCard({
   habit,
   onComplete,
   onEdit,
+  onViewDetails,
 }: {
   habit: DashboardHabit;
   onComplete: (habitId: string) => void;
   onEdit: (habit: DashboardHabit) => void;
+  onViewDetails?: (habit: DashboardHabit) => void;
 }) {
   const Icon = iconMap[habit.icon];
   const color = habitColors.find((item) => item.id === habit.color);
@@ -44,7 +46,7 @@ export function HabitCard({
             </div>
             <div className="min-w-0">
               <h3 className="truncate font-semibold">{habit.name}</h3>
-              <p className="text-sm text-muted-foreground">{category?.label ?? "\u4e60\u60ef"} · {habit.frequency === "daily" ? "\u6bcf\u5929" : "\u5de5\u4f5c\u65e5"}</p>
+              <p className="text-sm text-muted-foreground">{category?.label ?? "\u4e60\u60ef"} {"\u00b7"} {habit.frequency === "daily" ? "\u6bcf\u5929" : "\u5de5\u4f5c\u65e5"}</p>
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-2">
@@ -57,21 +59,36 @@ export function HabitCard({
 
         <SevenDayStrip days={habit.last7Days} />
 
-        <div className="flex items-center justify-between gap-3 rounded-[1.25rem] bg-muted/55 p-3">
+        <div className="flex flex-col gap-3 rounded-[1.25rem] bg-muted/55 p-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-medium">{habit.completedToday ? "\u4eca\u5929\u5df2\u6d47\u704c" : "\u4eca\u5929\u8fd8\u672a\u6d47\u704c"}</p>
-            <p className="text-xs text-muted-foreground">{"\u7d2f\u8ba1"} {habit.totalCheckins} {"\u6b21"} · {"\u6700\u957f"} {habit.longestStreak} {"\u5929"}</p>
+            <p className="text-xs text-muted-foreground">{"\u7d2f\u8ba1"} {habit.totalCheckins} {"\u6b21"} {"\u00b7"} {"\u6700\u957f"} {habit.longestStreak} {"\u5929"}</p>
           </div>
-          <Button
-            size="sm"
-            className="rounded-full"
-            variant={habit.completedToday ? "secondary" : "default"}
-            disabled={habit.completedToday}
-            onClick={() => onComplete(habit.id)}
-          >
-            <Check className="size-4" />
-            {habit.completedToday ? "\u5df2\u5b8c\u6210" : "\u6253\u5361"}
-          </Button>
+          <div className="flex shrink-0 items-center gap-2">
+            {onViewDetails && (
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                className="rounded-full"
+                aria-label={`${habit.name} \u67e5\u770b\u8be6\u60c5`}
+                onClick={() => onViewDetails(habit)}
+              >
+                <Eye className="size-4" />
+                {"\u67e5\u770b\u8be6\u60c5"}
+              </Button>
+            )}
+            <Button
+              size="sm"
+              className="rounded-full"
+              variant={habit.completedToday ? "secondary" : "default"}
+              disabled={habit.completedToday}
+              onClick={() => onComplete(habit.id)}
+            >
+              <Check className="size-4" />
+              {habit.completedToday ? "\u5df2\u5b8c\u6210" : "\u6253\u5361"}
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

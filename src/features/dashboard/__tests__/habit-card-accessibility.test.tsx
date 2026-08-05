@@ -36,10 +36,11 @@ const habit: DashboardHabit = {
 describe("HabitCard accessibility text", () => {
   it("renders localized aria labels instead of unicode escape text", () => {
     const markup = renderToStaticMarkup(
-      <HabitCard habit={habit} onComplete={() => undefined} onEdit={() => undefined} />,
+      <HabitCard habit={habit} onComplete={() => undefined} onEdit={() => undefined} onViewDetails={() => undefined} />,
     );
 
     expect(markup).toContain('aria-label="\u7f16\u8f91\u4e60\u60ef"');
     expect(markup).not.toContain("\\u7f16\\u8f91\\u4e60\\u60ef");
+    expect(markup).toContain("\u67e5\u770b\u8be6\u60c5");
   });
 });

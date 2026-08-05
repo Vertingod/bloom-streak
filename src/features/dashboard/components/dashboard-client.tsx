@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { CheckCircle2 } from "lucide-react";
 import { useState } from "react";
@@ -10,13 +10,18 @@ import type { HabitDraft } from "@/features/habits/types";
 import { CreateHabitSheet } from "./create-habit-sheet";
 import { GardenOverview } from "./garden-overview";
 import { HabitCard } from "./habit-card";
+import { HabitDetailSheet } from "./habit-detail-sheet";
 import { TodayHero } from "./today-hero";
 
 export function DashboardClient() {
   const [createOpen, setCreateOpen] = useState(false);
   const [editingHabit, setEditingHabit] = useState<DashboardHabit | null>(null);
+  const [selectedHabitId, setSelectedHabitId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
   const { model, loading, cloud, createHabit, updateHabit, archiveHabit, completeHabit } = useDashboardData();
+  const selectedHabit = selectedHabitId
+    ? model.habits.find((habit) => habit.id === selectedHabitId) ?? null
+    : null;
 
   function showFeedback(message: string) {
     setFeedback(message);
@@ -79,13 +84,31 @@ export function DashboardClient() {
             ) : (
               <div className="grid gap-3">
                 {model.habits.map((habit) => (
-                  <HabitCard key={habit.id} habit={habit} onEdit={setEditingHabit} onComplete={(habitId) => void handleComplete(habitId)} />
+                  <HabitCard
+                    key={habit.id}
+                    habit={habit}
+                    onEdit={setEditingHabit}
+                    onViewDetails={(item) => setSelectedHabitId(item.id)}
+                    onComplete={(habitId) => void handleComplete(habitId)}
+                  />
                 ))}
               </div>
             )}
           </section>
         </div>
       </div>
+
+      <HabitDetailSheet
+        open={Boolean(selectedHabit)}
+        habit={selectedHabit}
+        habits={model.habits}
+        todayAllDone={model.progress.allDone}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedHabitId(null);
+          }
+        }}
+      />
 
       {createOpen && (
         <CreateHabitSheet
