@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -42,3 +43,9 @@ next-env.d.ts
 
 # local dev server logs
 dev-server*.log
+
+# local Codex runtime data
+/.codex-runtime/
+
+# local Firecrawl scratch output
+/.firecrawl/

@@ -1,4 +1,4 @@
-﻿import type { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "BloomStreak",
     description: "每天一点点，连续绽放。把小习惯养成一座会发光的花园。",
     lang: "zh-CN",
-    start_url: "/dashboard",
+    start_url: "/",
     scope: "/",
     display: "standalone",
     orientation: "portrait-primary",

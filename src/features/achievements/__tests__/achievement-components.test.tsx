@@ -57,6 +57,8 @@ describe("achievement components", () => {
     expect(markup).toContain("\u7b2c\u4e00\u682a\u6210\u6811");
     expect(markup).toContain("\u6210\u5c31\u6536\u85cf\u5bb6");
     expect(markup).toContain("data-achievement-illustration");
+    expect(markup).toContain("data-mobile-achievement-summary");
+    expect(markup).toContain("\u5c55\u5f00\u5168\u90e8\u6210\u5c31");
   });
 
   it("renders a celebratory popup with image and count context", () => {

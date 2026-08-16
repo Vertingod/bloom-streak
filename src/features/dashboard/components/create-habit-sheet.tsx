@@ -1,13 +1,14 @@
 ﻿"use client";
 
 import { Plus, Trash2, X } from "lucide-react";
-import { useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { defaultHabitConfig, habitCategories, habitColors, habitIcons } from "@/features/habits/habit-config";
 import type { HabitCategory, HabitColor, HabitDraft, HabitFrequency, HabitIcon, Habit } from "@/features/habits/types";
+import { lockDocumentScroll } from "@/features/dashboard/sheet-scroll-lock";
 import { getTodayDateKey, getUserTimezone } from "@/lib/date";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +29,14 @@ export function CreateHabitSheet({
 }) {
   const today = useMemo(() => getTodayDateKey(getUserTimezone()), []);
   const isEditing = Boolean(habit);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    return lockDocumentScroll(document);
+  }, [open]);
   const [name, setName] = useState(habit?.name ?? "");
   const [category, setCategory] = useState<HabitCategory>(habit?.category ?? (defaultHabitConfig.category as HabitCategory));
   const [color, setColor] = useState<HabitColor>(habit?.color ?? (defaultHabitConfig.color as HabitColor));
@@ -92,14 +101,21 @@ export function CreateHabitSheet({
         className="absolute inset-0 bg-emerald-950/20 backdrop-blur-sm"
         onClick={() => onOpenChange(false)}
       />
-      <aside className="absolute inset-x-3 bottom-3 mx-auto max-h-[88dvh] max-w-xl overflow-y-auto rounded-[2rem] border bg-popover p-5 text-popover-foreground shadow-2xl md:inset-y-3 md:right-3 md:left-auto md:w-[30rem]">
+      <aside className="absolute inset-x-2 bottom-2 mx-auto max-h-[calc(100dvh-1rem)] max-w-xl overflow-y-auto overscroll-contain rounded-[1.75rem] border bg-popover p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] text-popover-foreground shadow-2xl sm:inset-x-3 sm:bottom-3 sm:p-5 md:inset-y-3 md:right-3 md:left-auto md:w-[30rem]">
         <div className="mb-5 flex items-start justify-between gap-3">
           <div>
             <p className="text-sm font-medium uppercase tracking-[0.24em] text-primary">{isEditing ? "Edit habit" : "New habit"}</p>
             <h2 className="mt-1 text-2xl font-semibold tracking-tight">{isEditing ? "\u8c03\u6574\u8fd9\u4e2a\u4e60\u60ef" : "\u79cd\u4e0b\u4e00\u4e2a\u5c0f\u4e60\u60ef"}</h2>
             <p className="mt-1 text-sm text-muted-foreground">{isEditing ? "\u4fee\u6539\u540e\u4f1a\u4fdd\u7559\u539f\u6709\u6253\u5361\u548c streak\u3002" : "\u5148\u4fdd\u5b58\u5728\u672c\u5730\uff0c\u4e4b\u540e\u53ef\u4ee5\u65e0\u7f1d\u63a5 Supabase \u540c\u6b65\u3002"}</p>
           </div>
-          <Button type="button" variant="ghost" size="icon-sm" onClick={() => onOpenChange(false)}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            aria-label="关闭新建习惯面板"
+            className="size-11 shrink-0 rounded-full"
+            onClick={() => onOpenChange(false)}
+          >
             <X className="size-4" />
           </Button>
         </div>

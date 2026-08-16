@@ -1,4 +1,4 @@
-﻿import { renderToStaticMarkup } from "react-dom/server";
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
 import manifest from "@/app/manifest";
@@ -11,7 +11,7 @@ describe("PWA install experience", () => {
 
     expect(appManifest.name).toBe("BloomStreak 习惯花园");
     expect(appManifest.short_name).toBe("BloomStreak");
-    expect(appManifest.start_url).toBe("/dashboard");
+    expect(appManifest.start_url).toBe("/");
     expect(appManifest.display).toBe("standalone");
     expect(appManifest.icons?.some((icon) => icon.src === "/icons/bloom-streak-icon-192.png")).toBe(true);
     expect(appManifest.icons?.some((icon) => icon.purpose?.includes("maskable"))).toBe(true);

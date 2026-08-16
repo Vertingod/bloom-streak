@@ -1,0 +1,99 @@
+name: Bug 报告
+description: 报告可复现的问题，帮助我们改进 BloomStreak
+title: "[Bug] "
+labels: []
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢你帮助改进 BloomStreak。请先确认问题可以稳定复现，并尽量提供最小复现信息。
+
+        请勿提交密码、访问令牌、Cookie、私有数据库连接串、未脱敏日志或真实用户隐私数据。
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: 问题摘要
+      description: 请简洁说明发生了什么，以及问题对使用造成的影响。
+      placeholder: 例如：完成今日打卡后，连续天数没有更新。
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction_steps
+    attributes:
+      label: 复现步骤
+      description: 请提供可以重复触发问题的完整步骤。
+      placeholder: |
+        1. 打开……
+        2. 点击……
+        3. 输入或选择……
+        4. 观察到……
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: 预期行为
+      description: 你原本期望看到什么结果？
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual_behavior
+    attributes:
+      label: 实际行为
+      description: 实际发生了什么？是否出现错误提示或数据异常？
+    validations:
+      required: true
+
+  - type: dropdown
+    id: data_mode
+    attributes:
+      label: 数据模式
+      description: 问题发生时，BloomStreak 使用哪种数据模式？
+      options:
+        - LocalStorage 本地模式（未连接 Supabase）
+        - Supabase 登录与云同步模式
+        - 不确定
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: 环境信息
+      description: 请填写与问题相关的设备、系统、浏览器和运行方式。
+      placeholder: |
+        - 设备类型与型号：
+        - 操作系统与版本：
+        - 浏览器与版本：
+        - 是否以 PWA 安装运行：是 / 否 / 不确定
+        - Node.js 版本（仅本地开发时需要）：
+    validations:
+      required: true
+
+  - type: textarea
+    id: sanitized_logs
+    attributes:
+      label: 已脱敏的日志或错误信息
+      description: 仅粘贴与问题直接相关且已经脱敏的内容。请移除密钥、令牌、Cookie、邮箱、用户数据和私有 URL 参数。
+      render: shell
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: 截图与补充信息
+      description: 可提供已脱敏的截图、录屏或其他上下文；请遮盖账号、邮箱和真实习惯数据。
+
+  - type: checkboxes
+    id: privacy_confirmation
+    attributes:
+      label: 隐私与安全确认
+      options:
+        - label: 我确认本 Issue 不包含密码、密钥、访问令牌、Cookie、数据库连接串或未脱敏的个人数据。
+          required: true
+    validations:
+      required: true

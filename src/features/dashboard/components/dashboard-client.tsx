@@ -103,11 +103,9 @@ export function DashboardClient() {
   }
 
   return (
-    <main className="min-h-[100dvh] px-4 py-5 text-foreground sm:px-6 lg:px-10">
+    <main id="top" className="min-h-[100dvh] px-4 py-5 text-foreground sm:px-6 lg:px-10">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-5">
         <TodayHero model={model} onCreateHabit={() => setCreateOpen(true)} />
-        <AuthPanel cloud={cloud} />
-        <PwaInstallCard />
 
         {feedback && (
           <div className="flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-medium text-primary shadow-sm">
@@ -117,12 +115,7 @@ export function DashboardClient() {
         )}
 
         <div className="grid gap-5 lg:grid-cols-[0.92fr_1.08fr]">
-          <div className="space-y-5">
-            <GardenOverview habits={model.habits} />
-            <GardenAchievementPanel habits={model.allHabits} perfectDayCount={model.perfectDayCount} />
-          </div>
-
-          <section className="space-y-3">
+          <section className="space-y-3 lg:col-start-2 lg:row-start-1">
             <div className="flex items-end justify-between gap-3 px-1">
               <div>
                 <h2 className="text-xl font-semibold tracking-tight">{"\u4eca\u65e5\u4e60\u60ef"}</h2>
@@ -153,7 +146,17 @@ export function DashboardClient() {
               </div>
             )}
           </section>
+
+          <div className="space-y-5 lg:col-start-1 lg:row-start-1">
+            <GardenOverview habits={model.habits} />
+            <GardenAchievementPanel habits={model.allHabits} perfectDayCount={model.perfectDayCount} />
+          </div>
         </div>
+
+        <section aria-label="账户与安装" className="grid gap-4 lg:grid-cols-2">
+          <AuthPanel cloud={cloud} />
+          <PwaInstallCard />
+        </section>
       </div>
 
       <HabitDetailSheet

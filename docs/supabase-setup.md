@@ -37,6 +37,12 @@ In Supabase Auth URL settings, allow this local redirect URL during development:
 http://localhost:3000/auth/callback
 ```
 
+If you start the dev server on another port (for example `npm run dev -- -p 3001`), use that port instead:
+
+```text
+http://localhost:3001/auth/callback
+```
+
 For production, add your deployed callback URL as well:
 
 ```text
@@ -52,7 +58,13 @@ npm run dev
 Open:
 
 ```text
+http://localhost:3000
+```
+
+Or open the pure dashboard:
+
+```text
 http://localhost:3000/dashboard
 ```
 
-If credentials are missing, the dashboard stays in local mode. If credentials are present, the dashboard shows the Email Magic Link sign-in panel. After sign-in, LocalStorage habits/check-ins are pushed to Supabase and future actions use Supabase repositories.
+If credentials are missing, the app stays in local mode. If credentials are present, the dashboard shows the Email Magic Link sign-in panel. After sign-in, LocalStorage habits/check-ins are pushed to Supabase and future actions use Supabase repositories.

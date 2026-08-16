@@ -7,9 +7,9 @@
 - 项目中文名：习惯花园
 - 产品名：BloomStreak
 - package / repo name：`bloom-streak`
-- 项目路径：`C:\Users\21232\Desktop\项目\vibe code\习惯花园`
+- 项目路径：`.`
 - 一句话定位：一个移动端优先、花园隐喻、有情绪价值的习惯打卡 App；用户每天完成小习惯，就像浇灌植物，让连续坚持变得可见。
-- 当前阶段：核心 MVP 功能闭环已完成，进入上线前真实链路验证与视觉 polish 阶段。
+- 当前阶段：核心 MVP 功能闭环已完成，进入上线前真实链路验证与视觉 polish 阶段；首页已改为“可交互 Dashboard 优先 + 下方项目介绍”的结构。
 
 ## 2. 当前技术栈
 
@@ -56,7 +56,7 @@ http://localhost:3001/dashboard
 
 ### 4.1 基础工程
 
-已完成：Next.js App Router 项目、TypeScript、Tailwind CSS v4、shadcn 风格组件、Landing page、Dashboard page、README、Supabase setup 文档。
+已完成：Next.js App Router 项目、TypeScript、Tailwind CSS v4、shadcn 风格组件、可交互首页（Dashboard 优先 + 项目介绍）、Dashboard page、README、Supabase setup 文档。
 
 关键文件：
 
@@ -313,12 +313,12 @@ Phase 8: 上线前真实链路验证与移动端 polish
 可以在新会话直接粘贴：
 
 ```text
-请先阅读 C:\Users\21232\Desktop\项目\vibe code\习惯花园\PROJECT_STATUS.md、AGENTS.md、README.md 和 docs/supabase-setup.md，然后接手 BloomStreak / 习惯花园项目。当前项目已完成核心 MVP、Supabase 登录同步、成就系统、PWA 和今日花园回响。下一步请从 Phase 8：上线前真实链路验证与移动端 polish 开始，先检查 git status、端口 3000/3001、Supabase Magic Link 真实链路，再提出并执行小步验证计划。注意全程使用 UTF-8，避免中文乱码，不要泄露 .env.local 的 key。
+请先阅读 PROJECT_STATUS.md、AGENTS.md、README.md 和 docs/supabase-setup.md，然后接手 BloomStreak / 习惯花园项目。当前项目已完成核心 MVP、Supabase 登录同步、成就系统、PWA 和今日花园回响。下一步请从 Phase 8：上线前真实链路验证与移动端 polish 开始，先检查 git status、端口 3000/3001、Supabase Magic Link 真实链路，再提出并执行小步验证计划。注意全程使用 UTF-8，避免中文乱码，不要泄露 .env.local 的 key。
 ```
 
 ## 10. 关键提醒
 
-- 当前项目根目录：`C:\Users\21232\Desktop\项目\vibe code\习惯花园`
+- 当前项目根目录：`.`
 - 当前本地可用地址：`http://localhost:3001/dashboard`
 - 不要误以为 `3000` 一定是本项目；之前 `3000` 返回过 404/被其他项目占用。
 - 修改 Next.js 相关代码前遵守 `AGENTS.md`，先读对应 Next docs。
