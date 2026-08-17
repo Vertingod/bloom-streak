@@ -56,7 +56,7 @@ http://localhost:3001/dashboard
 
 ### 4.1 基础工程
 
-已完成：Next.js App Router 项目、TypeScript、Tailwind CSS v4、shadcn 风格组件、可交互首页（Dashboard 优先 + 项目介绍）、Dashboard page、README、Supabase setup 文档。
+已完成：Next.js App Router 项目、TypeScript、Tailwind CSS v4、shadcn 风格组件、可交互首页（Dashboard 优先 + 项目介绍）、Dashboard page、GitHub Pages 静态交互 Demo、README、Supabase setup 文档。
 
 关键文件：
 
@@ -65,6 +65,9 @@ src/app/page.tsx
 src/app/dashboard/page.tsx
 src/app/layout.tsx
 src/app/globals.css
+docs/demo.html
+docs/index.html
+.github/workflows/deploy-pages.yml
 README.md
 docs/supabase-setup.md
 ```

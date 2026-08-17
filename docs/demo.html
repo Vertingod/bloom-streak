@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="BloomStreak 静态交互 Demo：在浏览器里创建习惯、每日打卡，并看着花园慢慢生长。">
+  <title>BloomStreak · 习惯花园静态试用版</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f5efe3;
+      --paper-deep: #ece2d0;
+      --ink: #203028;
+      --muted: #68766d;
+      --line: #dfd3bd;
+      --card: rgba(255, 255, 255, .78);
+      --sage: #4c7a5b;
+      --sage-deep: #2f513c;
+      --sage-soft: #dcebdc;
+      --amber: #d99b3d;
+      --amber-soft: #f7e8c5;
+      --clay: #cf6a4e;
+      --clay-soft: #f7ddd3;
+      --sky: #6f9fb0;
+      --sky-soft: #dcecf0;
+      --lavender: #9d86be;
+      --lavender-soft: #eae3f4;
+      --berry: #c2668a;
+      --berry-soft: #f6dfe8;
+      --danger: #a5483a;
+      --shadow: 0 24px 70px -32px rgba(48, 63, 52, .35);
+      font-family: "Avenir Next", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      line-height: 1.55;
+      background:
+        radial-gradient(circle at 6% 0%, #f8dcbd 0, transparent 28%),
+        radial-gradient(circle at 94% 10%, #d9e8d7 0, transparent 26%),
+        radial-gradient(circle at 50% 100%, #f1dfc9 0, transparent 34%),
+        var(--paper);
+    }
+    h1, h2, h3 {
+      font-family: "Noto Serif SC", "Songti SC", STSong, serif;
+      letter-spacing: -.04em;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .shell { width: min(1160px, calc(100% - 32px)); margin: 0 auto; }
+    .hero { padding: 58px 0 34px; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.6);
+      color: var(--muted);
+      font-size: .82rem;
+      letter-spacing: .05em;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--clay);
+      box-shadow: 0 0 0 4px rgba(207,106,78,.14);
+    }
+    h1 {
+      max-width: 760px;
+      margin: 20px 0 10px;
+      font-size: clamp(2.5rem, 7vw, 5.2rem);
+      line-height: 1.02;
+    }
+    .hero-copy {
+      max-width: 720px;
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.18rem);
+      line-height: 1.8;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 16px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--ink);
+      font-weight: 750;
+      text-decoration: none;
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+    .button:hover { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(60, 75, 65, .12); }
+    .button.primary {
+      border-color: var(--sage);
+      background: var(--sage);
+      color: #fff;
+      box-shadow: 0 12px 30px -12px rgba(76,122,91,.65);
+    }
+    .button.primary:hover { background: var(--sage-deep); }
+    .button.ghost { background: transparent; }
+    .button.danger { color: var(--danger); background: transparent; }
+    .button.small { min-height: 34px; padding: 6px 12px; font-size: .86rem; }
+    .notice {
+      margin-top: 26px;
+      padding: 16px 18px;
+      border: 1px solid #cfe2d3;
+      border-radius: 20px;
+      background: var(--sage-soft);
+      color: #2e5a3e;
+    }
+    .notice strong { display: block; margin-bottom: 2px; }
+    .dashboard {
+      display: grid;
+      grid-template-columns: 1.25fr .8fr;
+      gap: 18px;
+      align-items: start;
+      padding-bottom: 48px;
+    }
+    .stack { display: grid; gap: 18px; }
+    .card {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+    .card.dark {
+      color: #f6f3e9;
+      background: linear-gradient(145deg, #25342b, #1d2a23);
+      border-color: #25342b;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .card-header h2 { margin: 0; font-size: 1.3rem; }
+    .card-header p { margin: 5px 0 0; color: var(--muted); font-size: .9rem; }
+    .dark .card-header p { color: #bfcabf; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .stat {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.68);
+      border: 1px solid rgba(223,211,189,.8);
+    }
+    .stat:nth-child(2) { background: var(--amber-soft); }
+    .stat:nth-child(3) { background: var(--sky-soft); }
+    .stat-label { display: block; color: var(--muted); font-size: .82rem; }
+    .stat-value { display: block; margin-top: 4px; font-size: 1.6rem; font-weight: 850; letter-spacing: -.04em; }
+    .garden {
+      position: relative;
+      min-height: 220px;
+      overflow: hidden;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 18% 18%, rgba(217,155,61,.16), transparent 32%),
+        linear-gradient(160deg, #f0f3e4, #e4eddc);
+      padding: 18px;
+    }
+    .garden-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+      gap: 12px;
+      min-height: 184px;
+    }
+    .plant {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      min-height: 168px;
+      padding: 12px 6px 14px;
+      border: 1px solid rgba(255,255,255,.7);
+      border-radius: 22px;
+      background: rgba(255,255,255,.5);
+      box-shadow: 0 12px 30px -18px rgba(40,60,45,.35);
+    }
+    .plant-icon { font-size: 1.5rem; line-height: 1; }
+    .plant-stem {
+      width: 10px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #5b8a63, #3e6b49);
+      transition: height .5s ease;
+    }
+    .plant-bloom {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--amber-soft);
+      border: 1px solid rgba(217,155,61,.35);
+      color: #b47827;
+      font-size: 1rem;
+      transition: transform .4s ease, opacity .4s ease;
+    }
+    .plant-bloom.lit { transform: scale(1.08); opacity: 1; }
+    .plant-bloom.dim { opacity: .35; filter: grayscale(.5); }
+    .plant-name {
+      width: 100%;
+      margin-top: 8px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-align: center;
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .plant-streak { font-size: .72rem; color: var(--muted); }
+    .habit-list { display: grid; gap: 12px; }
+    .habit-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255,255,255,.66);
+    }
+    .habit-row.completed { background: rgba(220,235,220,.66); }
+    .habit-icon {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      font-size: 1.4rem;
+      border: 1px solid rgba(255,255,255,.8);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.03);
+    }
+    .habit-info { min-width: 0; }
+    .habit-name {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 800;
+    }
+    .habit-meta { display: block; margin-top: 2px; color: var(--muted); font-size: .78rem; }
+    .habit-side { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+    .streak-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: var(--amber-soft);
+      color: #9a641f;
+      font-size: .76rem;
+      font-weight: 800;
+    }
+    .week-strip { display: flex; gap: 4px; }
+    .day-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #e8dfce;
+      transition: background .2s ease, transform .2s ease;
+    }
+    .day-dot.on { background: var(--sage); transform: scale(1.08); }
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 13px; }
+    .field { display: grid; gap: 7px; }
+    .field.full { grid-column: 1 / -1; }
+    label { color: var(--muted); font-size: .84rem; font-weight: 700; }
+    input[type="text"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 11px 12px;
+      color: var(--ink);
+      background: #fffdf9;
+      outline: none;
+    }
+    input[type="text"]:focus { border-color: var(--sage); box-shadow: 0 0 0 3px rgba(76,122,91,.13); }
+    .choice-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .choice-pill {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fffdf9;
+      color: var(--muted);
+      font-size: .84rem;
+      cursor: pointer;
+      transition: border-color .18s ease, background .18s ease;
+    }
+    .choice-pill input { position: absolute; opacity: 0; pointer-events: none; }
+    .choice-pill:has(input:checked) {
+      border-color: var(--sage);
+      background: var(--sage-soft);
+      color: var(--sage-deep);
+      font-weight: 800;
+    }
+    .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,.08);
+    }
+    .form-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 16px; }
+    .empty { padding: 22px 0 6px; color: var(--muted); text-align: center; font-size: .92rem; }
+    .status { min-height: 24px; margin-top: 10px; color: var(--sage-deep); font-size: .86rem; }
+    .info-section { padding: 14px 0 32px; }
+    .info-heading { max-width: 760px; }
+    .info-heading h2 { margin: 18px 0 10px; font-size: clamp(1.9rem, 4vw, 3rem); line-height: 1.12; }
+    .info-heading p { margin: 0; color: var(--muted); font-size: 1.04rem; line-height: 1.8; }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .info-card {
+      display: grid;
+      gap: 8px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255,255,255,.72);
+    }
+    .info-card strong { font-size: 1.05rem; }
+    .info-card span { color: var(--muted); font-size: .92rem; line-height: 1.7; }
+    .info-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+    footer { padding: 0 0 52px; color: var(--muted); font-size: .86rem; }
+    footer a { color: var(--sage-deep); }
+    @media (max-width: 880px) {
+      .dashboard { grid-template-columns: 1fr; }
+      .info-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .shell { width: min(100% - 24px, 1160px); }
+      .hero { padding-top: 40px; }
+      .stats, .form-grid { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
+      .card { padding: 18px; border-radius: 22px; }
+      .habit-row { grid-template-columns: auto 1fr; }
+      .habit-side { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; align-items: center; }
+      .form-actions { flex-direction: column-reverse; }
+      .form-actions .button, .info-actions .button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero shell">
+    <span class="eyebrow"><span class="dot"></span> BloomStreak · Static Demo / 静态试用版</span>
+    <h1>把每一次小小的坚持，种成一座会发光的花园。</h1>
+    <p class="hero-copy">不用安装、不用登录，直接在浏览器里体验 BloomStreak 的核心流程：创建习惯、每日打卡，看着连续天数与花园一起慢慢生长。</p>
+    <div class="hero-actions">
+      <a class="button ghost" href="https://github.com/Vertigod/bloom-streak#readme">查看项目介绍</a>
+      <button class="button danger" id="resetButton" type="button">重置示例</button>
+    </div>
+    <div class="notice" role="note">
+      <strong>这是一个安全的静态演示</strong>
+      数据只保存在你当前浏览器的 localStorage，不会上传到 BloomStreak、Supabase 或其他服务器；刷新页面后仍会保留，点击“重置示例”即可恢复。
+    </div>
+  </header>
+
+  <main class="shell dashboard">
+    <div class="stack">
+      <section class="card" aria-labelledby="overviewTitle">
+        <div class="card-header">
+          <div><h2 id="overviewTitle">今日花园</h2><p>示例习惯 · 数据仅保存在当前浏览器</p></div>
+        </div>
+        <div class="stats" id="stats"></div>
+        <div class="garden" style="margin-top: 18px">
+          <div class="garden-grid" id="garden"></div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="habitsTitle">
+        <div class="card-header">
+          <div><h2 id="habitsTitle">我的习惯</h2><p>点击打卡，连续天数会随之更新</p></div>
+        </div>
+        <div class="habit-list" id="habits"></div>
+      </section>
+    </div>
+
+    <div class="stack">
+      <section class="card" aria-labelledby="addHabitTitle">
+        <div class="card-header">
+          <div><h2 id="addHabitTitle">种下新习惯</h2><p>先保存在当前浏览器，之后可同步到 Supabase</p></div>
+        </div>
+        <form id="habitForm">
+          <div class="form-grid">
+            <div class="field full">
+              <label for="habitName">习惯名称</label>
+              <input id="habitName" type="text" maxlength="24" placeholder="例如：晨间喝水、阅读 20 分钟">
+            </div>
+            <div class="field full">
+              <label>颜色</label>
+              <div class="choice-row" id="colorChoices"></div>
+            </div>
+            <div class="field full">
+              <label>图标</label>
+              <div class="choice-row" id="iconChoices"></div>
+            </div>
+            <div class="field full">
+              <label>频率</label>
+              <div class="choice-row">
+                <label class="choice-pill"><input type="radio" name="frequency" value="daily" checked><span>每天</span></label>
+                <label class="choice-pill"><input type="radio" name="frequency" value="weekdays"><span>工作日</span></label>
+              </div>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="button primary" type="submit">种下这个习惯</button>
+          </div>
+        </form>
+        <div class="status" id="status" role="status" aria-live="polite"></div>
+      </section>
+
+      <section class="card dark" aria-labelledby="aboutTitle">
+        <div class="card-header">
+          <div><h2 id="aboutTitle">为什么是花园？</h2><p>让坚持不再是枯燥的计数</p></div>
+        </div>
+        <p style="margin:0 0 14px;color:#c8d2c8;line-height:1.8">每个习惯都是一株植物。完成一次，就浇一次水；连续越久，花园就越茂盛。这里展示的是完整应用的一小片花园。</p>
+        <div style="display:grid;gap:8px">
+          <div style="padding:11px 13px;border-radius:14px;background:rgba(255,255,255,.07)">🌱 本地优先，无需注册即可体验</div>
+          <div style="padding:11px 13px;border-radius:14px;background:rgba(255,255,255,.07)">🔥 当前连续、最长连续、累计打卡清晰可见</div>
+          <div style="padding:11px 13px;border-radius:14px;background:rgba(255,255,255,.07)">☁️ 完整版可选 Supabase Magic Link 云同步</div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <section class="shell info-section" id="about">
+    <div class="info-heading">
+      <span class="eyebrow"><span class="dot"></span> BloomStreak · 项目介绍</span>
+      <h2>把坚持变成一座会发光的花园。</h2>
+      <p>BloomStreak 是一个移动端优先、花园隐喻的习惯打卡 Web 应用。先在上方 Demo 里创建习惯并打卡，再查看下方项目能力与开源信息。</p>
+    </div>
+    <div class="info-grid">
+      <article class="info-card"><strong>花园成长反馈</strong><span>每天完成一个小习惯，就像浇灌一株植物，让坚持变得可见。</span></article>
+      <article class="info-card"><strong>清晰 Streak</strong><span>当前连续天数、最长连续天数和累计打卡次数一目了然。</span></article>
+      <article class="info-card"><strong>开源可扩展</strong><span>完整 Next.js 应用、LocalStorage 与 Supabase 数据层、测试和文档都在 GitHub 仓库中。</span></article>
+    </div>
+    <div class="info-actions">
+      <a class="button primary" href="https://github.com/Vertigod/bloom-streak#readme">阅读项目 README</a>
+      <a class="button" href="https://github.com/Vertigod/bloom-streak">访问 GitHub 仓库</a>
+    </div>
+  </section>
+
+  <footer class="shell">BloomStreak 是一个开源习惯花园 MVP。数据边界和完整应用说明请查看 <a href="https://github.com/Vertigod/bloom-streak/blob/main/README.md">README</a> 与 <a href="https://github.com/Vertigod/bloom-streak/blob/main/SECURITY.md">安全说明</a>。</footer>
+
+  <script>
+    (() => {
+      const STORAGE_KEY = "bloom-streak-static-demo-v1";
+      const COLORS = [
+        { id: "sage", label: "鼠尾草", className: "#cfe3cf" },
+        { id: "sunrise", label: "晨光", className: "#f4d9a6" },
+        { id: "clover", label: "三叶草", className: "#cbe3c0" },
+        { id: "sky", label: "晴空", className: "#cfe4ec" },
+        { id: "lavender", label: "薰衣草", className: "#e4d9f1" },
+        { id: "berry", label: "浆果", className: "#f0d3df" }
+      ];
+      const ICONS = ["💧", "📖", "🌱", "✨", "🌙", "✍️", "🏃", "❤️"];
+      const DEFAULT_COLOR = "sage";
+      const DEFAULT_ICON = "💧";
+
+      const $ = (id) => document.getElementById(id);
+      const escapeHtml = (value) => String(value).replace(/[&<>'"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character]);
+      const pad = (value) => String(value).padStart(2, "0");
+      const toDateKey = (date) => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+      const addDays = (dateKey, offset) => {
+        const [year, month, day] = dateKey.split("-").map(Number);
+        const date = new Date(year, month - 1, day + offset);
+        return toDateKey(date);
+      };
+      const isWeekday = (dateKey) => {
+        const [year, month, day] = dateKey.split("-").map(Number);
+        const dayOfWeek = new Date(year, month - 1, day).getDay();
+        return dayOfWeek >= 1 && dayOfWeek <= 5;
+      };
+      const today = toDateKey(new Date());
+
+      function buildSampleHabits() {
+        const makeHabit = (name, icon, color, frequency, completedDays) => ({
+          id: `sample-${name}`,
+          name,
+          icon,
+          color,
+          frequency,
+          createdAt: addDays(today, -14),
+          checkins: completedDays
+        });
+
+        const previousNDays = (n) => Array.from({ length: n }, (_, index) => addDays(today, index - n));
+        const recentWeekdays = Array.from({ length: 7 }, (_, index) => addDays(today, index - 6)).filter(isWeekday);
+
+        return [
+          makeHabit("晨间喝水", "💧", "sage", "daily", previousNDays(8)),
+          makeHabit("阅读 20 分钟", "📖", "sunrise", "daily", [...previousNDays(5), today]),
+          makeHabit("睡前放下手机", "🌙", "sky", "weekdays", recentWeekdays)
+        ];
+      }
+
+      const initialState = () => ({ habits: buildSampleHabits() });
+      let state = loadState();
+
+      function loadState() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+          if (saved && Array.isArray(saved.habits)) return saved;
+        } catch (_) {}
+        return initialState();
+      }
+
+      function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function setStatus(message) {
+        $("status").textContent = message;
+        window.setTimeout(() => {
+          if ($("status").textContent === message) $("status").textContent = "";
+        }, 3200);
+      }
+
+      function habitColorClass(colorId) {
+        return COLORS.find((color) => color.id === colorId)?.className || "#e8dfce";
+      }
+
+      function isDue(habit, dateKey) {
+        if (habit.frequency === "weekdays") return isWeekday(dateKey);
+        return true;
+      }
+
+      function currentStreak(habit) {
+        let streak = 0;
+        let cursor = today;
+        const checkins = new Set(habit.checkins || []);
+        if (isDue(habit, cursor) && !checkins.has(cursor)) {
+          cursor = addDays(cursor, -1);
+        }
+        while (checkins.has(cursor)) {
+          streak++;
+          cursor = addDays(cursor, -1);
+        }
+        return streak;
+      }
+
+      function longestStreak(habit) {
+        const dates = [...new Set(habit.checkins || [])].sort();
+        if (!dates.length) return 0;
+        let longest = 1;
+        let run = 1;
+        for (let index = 1; index < dates.length; index++) {
+          if (addDays(dates[index - 1], 1) === dates[index]) {
+            run++;
+            longest = Math.max(longest, run);
+          } else {
+            run = 1;
+          }
+        }
+        return longest;
+      }
+
+      function last7Days(habit) {
+        const checkins = new Set(habit.checkins || []);
+        return Array.from({ length: 7 }, (_, index) => addDays(today, index - 6)).map((date) => checkins.has(date));
+      }
+
+      function render() {
+        const activeHabits = state.habits;
+        const dueHabits = activeHabits.filter((habit) => isDue(habit, today));
+        const completedToday = activeHabits.filter((habit) => (habit.checkins || []).includes(today)).length;
+        const totalCheckins = activeHabits.reduce((sum, habit) => sum + (habit.checkins || []).length, 0);
+        const bestStreak = activeHabits.reduce((best, habit) => Math.max(best, currentStreak(habit)), 0);
+
+        $("stats").innerHTML = `
+          <div class="stat"><span class="stat-label">今日进度</span><strong class="stat-value">${completedToday} / ${dueHabits.length}</strong></div>
+          <div class="stat"><span class="stat-label">当前最长连续</span><strong class="stat-value">${bestStreak} 天</strong></div>
+          <div class="stat"><span class="stat-label">累计打卡</span><strong class="stat-value">${totalCheckins} 次</strong></div>
+        `;
+
+        $("garden").innerHTML = activeHabits.length ? activeHabits.map((habit) => {
+          const streak = currentStreak(habit);
+          const height = Math.min(96, 30 + streak * 5);
+          const completed = (habit.checkins || []).includes(today);
+          const bg = habitColorClass(habit.color);
+          return `
+            <div class="plant" style="background:${bg}">
+              <div class="plant-bloom ${completed ? "lit" : "dim"}">${completed ? "🌸" : "🌱"}</div>
+              <div class="plant-stem" style="height:${height}px"></div>
+              <div class="plant-icon">${escapeHtml(habit.icon)}</div>
+              <div class="plant-name">${escapeHtml(habit.name)}</div>
+              <div class="plant-streak">${streak} 天</div>
+            </div>
+          `;
+        }).join("") : `<div class="empty">花园还空着，种下第一个习惯吧。</div>`;
+
+        $("habits").innerHTML = activeHabits.length ? activeHabits.map((habit) => {
+          const completed = (habit.checkins || []).includes(today);
+          const week = last7Days(habit);
+          const bg = habitColorClass(habit.color);
+          return `
+            <div class="habit-row ${completed ? "completed" : ""}">
+              <div class="habit-icon" style="background:${bg}">${escapeHtml(habit.icon)}</div>
+              <div class="habit-info">
+                <span class="habit-name">${escapeHtml(habit.name)}</span>
+                <span class="habit-meta">${habit.frequency === "weekdays" ? "工作日" : "每天"} · 最长 ${longestStreak(habit)} 天</span>
+                <div class="week-strip" style="margin-top:8px" aria-label="最近 7 天">
+                  ${week.map((on) => `<span class="day-dot ${on ? "on" : ""}"></span>`).join("")}
+                </div>
+              </div>
+              <div class="habit-side">
+                <span class="streak-badge">🔥 ${currentStreak(habit)} 天</span>
+                <div style="display:flex;gap:6px;align-items:center">
+                  <button class="button small ${completed ? "ghost" : "primary"}" data-toggle-habit="${escapeHtml(habit.id)}" type="button">${completed ? "取消打卡" : "打卡"}</button>
+                  <button class="button small danger" data-delete-habit="${escapeHtml(habit.id)}" type="button" aria-label="删除 ${escapeHtml(habit.name)}">×</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("") : `<div class="empty">还没有习惯，先在右侧种下第一个。</div>`;
+      }
+
+      function renderChoices() {
+        $("colorChoices").innerHTML = COLORS.map((color) => `
+          <label class="choice-pill">
+            <input type="radio" name="color" value="${color.id}" ${color.id === DEFAULT_COLOR ? "checked" : ""}>
+            <span class="swatch" style="background:${color.className}"></span><span>${color.label}</span>
+          </label>
+        `).join("");
+        $("iconChoices").innerHTML = ICONS.map((icon) => `
+          <label class="choice-pill">
+            <input type="radio" name="icon" value="${escapeHtml(icon)}" ${icon === DEFAULT_ICON ? "checked" : ""}>
+            <span>${icon}</span>
+          </label>
+        `).join("");
+      }
+
+      $("habitForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const name = $("habitName").value.trim();
+        const color = document.querySelector('input[name="color"]:checked')?.value || DEFAULT_COLOR;
+        const icon = document.querySelector('input[name="icon"]:checked')?.value || DEFAULT_ICON;
+        const frequency = document.querySelector('input[name="frequency"]:checked')?.value || "daily";
+        if (!name) { setStatus("先给习惯起一个名字。"); return; }
+        if (state.habits.some((habit) => habit.name === name)) { setStatus("这个习惯已经在花园里了。"); return; }
+        state.habits.push({
+          id: `habit-${Date.now()}`,
+          name,
+          icon,
+          color,
+          frequency,
+          createdAt: today,
+          checkins: []
+        });
+        saveState();
+        render();
+        $("habitForm").reset();
+        renderChoices();
+        setStatus(`${name} 已种下，今天就可以开始浇灌。`);
+      });
+
+      $("habits").addEventListener("click", (event) => {
+        const toggleButton = event.target.closest("[data-toggle-habit]");
+        if (toggleButton) {
+          const habit = state.habits.find((item) => item.id === toggleButton.dataset.toggleHabit);
+          if (!habit) return;
+          const index = (habit.checkins || []).indexOf(today);
+          if (index >= 0) habit.checkins.splice(index, 1);
+          else habit.checkins.push(today);
+          saveState();
+          render();
+          return;
+        }
+
+        const deleteButton = event.target.closest("[data-delete-habit]");
+        if (deleteButton) {
+          const habit = state.habits.find((item) => item.id === deleteButton.dataset.deleteHabit);
+          if (!habit) return;
+          if (!window.confirm(`确定要删除“${habit.name}”吗？它的打卡记录也会一并删除。`)) return;
+          state.habits = state.habits.filter((item) => item.id !== habit.id);
+          saveState();
+          render();
+          setStatus(`${habit.name} 已从花园中移除。`);
+        }
+      });
+
+      $("resetButton").addEventListener("click", () => {
+        state = initialState();
+        saveState();
+        render();
+        renderChoices();
+        setStatus("示例花园已恢复。");
+      });
+
+      renderChoices();
+      render();
+    })();
+  </script>
+</body>
+</html>

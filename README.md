@@ -4,11 +4,11 @@
 
 BloomStreak 是一个以花园成长为视觉隐喻的习惯追踪 Web 应用。它希望把每日打卡从“完成任务”变成轻量、温暖且可持续的反馈：记录习惯、观察连续天数与历史完成情况，并让花园随进度逐步生长。
 
-> 🚀 **在线体验**：[https://bloom-streak.vercel.app](https://bloom-streak.vercel.app)
+> 🚀 **在线体验**：[https://vertingod.github.io/bloom-streak/](https://vertingod.github.io/bloom-streak/)
 >
-> 无需注册，打开即可创建习惯并打卡。演示默认使用 LocalStorage，数据只保存在当前浏览器。
+> 无需注册，打开即可创建习惯并打卡。静态 Demo 默认使用 LocalStorage，数据只保存在当前浏览器。
 
-<!-- TODO: Vercel 部署后如地址不是 bloom-streak.vercel.app，请同步替换上面的在线体验链接。 -->
+<!-- 静态 Demo 由 .github/workflows/deploy-pages.yml 自动发布到 GitHub Pages；Vercel 用于部署完整 Next.js 应用。 -->
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FVertingod%2Fbloom-streak)
 
 ## 主要功能
@@ -97,19 +97,33 @@ Copy-Item .env.example .env.local
 
 不要把 `.env.local`、service role key 或其他私密凭据提交到版本库。前端环境变量不能替代数据库侧的 RLS 安全策略。
 
-## 部署到线上（推荐 Vercel）
+## 在线 Demo 与部署
 
-本项目是 Next.js 应用，推荐部署到 Vercel；不配置任何 Supabase 环境变量也能直接运行，因为应用会自动使用 LocalStorage 模式。
+### GitHub Pages 静态交互 Demo（当前公开入口）
+
+仓库的 `docs/` 目录包含一个单文件静态交互 Demo，由 `.github/workflows/deploy-pages.yml` 自动发布到：
+
+```text
+https://vertingod.github.io/bloom-streak/
+```
+
+- 无需注册、无需后端，直接使用 LocalStorage 保存演示数据。
+- 页面结构：上方是可操作的“习惯花园”，下方是项目介绍。
+- 静态 Demo 适合公开展示和快速体验；完整 Next.js 应用仍保留在 `src/` 中。
+
+### Vercel 部署完整应用
+
+完整 Next.js 应用推荐部署到 Vercel；不配置任何 Supabase 环境变量也能直接运行。
 
 1. 把仓库推送到 GitHub。
 2. 在 [Vercel](https://vercel.com) 中导入该仓库。
-3. 保持环境变量为空即可得到一个可交互的在线 Demo。
+3. 保持环境变量为空即可运行完整应用。
 4. 如需启用 Supabase 登录与同步，再添加：
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`（旧项目可继续使用 `NEXT_PUBLIC_SUPABASE_ANON_KEY`）
 5. 在 Supabase 后台把生产环境的 Auth Redirect URL 配置为 `https://你的域名/auth/callback`。
 
-> GitHub Pages 目前不适合直接托管本项目：应用包含动态认证回调和 Node.js 服务端能力，GitHub Pages 只能托管纯静态文件。
+> 注意：完整 Next.js 应用包含动态认证回调和 Node.js 服务端能力，不能直接用 GitHub Pages 托管；GitHub Pages 只发布 `docs/` 下的静态 Demo。
 
 ## PWA 边界
 
